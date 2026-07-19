@@ -3,7 +3,7 @@ import { Heart, Leaf, Accessibility, Settings } from 'lucide-react';
 import { useTypewriter } from '../hooks/useTypewriter';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import DOMPurify from 'dompurify';
-import PropTypes from 'prop-types';
+import PreferenceToggle from './common/PreferenceToggle';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({
@@ -11,8 +11,17 @@ const model = genAI.getGenerativeModel({
   systemInstruction: "You are the Accessibility & Sustainability Advisor for the FIFA World Cup 2026 SmartStadium. Generate a personalized match day plan for a fan based on their selected preferences. Be enthusiastic, concise, and format the output cleanly with emojis. Mention specific stadium gates, quiet zones, and sustainability metrics (e.g. CO2 offset by transit). Keep it under 150 words.",
 });
 
+/**
+ * Sanitizes input string to prevent XSS
+ * @param {string} input - The raw string
+ * @returns {string} The sanitized string
+ */
 const sanitizeInput = (input) => DOMPurify.sanitize(input);
 
+/**
+ * AccessibilityAdvisor Component for generating personalized accessibility plans
+ * @returns {React.ReactElement} The rendered AccessibilityAdvisor component
+ */
 export default function AccessibilityAdvisor() {
   const [preferences, setPreferences] = useState({
     wheelchair: false,
@@ -25,6 +34,9 @@ export default function AccessibilityAdvisor() {
 
   const { displayedText, isTyping } = useTypewriter(planContent, 10);
 
+  /**
+   * Handles the generation of the accessibility plan via Gemini AI
+   */
   const handleGenerate = async () => {
     setIsGenerating(true);
     setPlanGenerated(false);
@@ -115,57 +127,3 @@ export default function AccessibilityAdvisor() {
     </section>
   );
 }
-
-AccessibilityAdvisor.propTypes = {};
-
-function PreferenceToggle({ label, icon, checked, onChange }) {
-  return (
-    <button 
-      className="glass-card" 
-      style={{ 
-        padding: '16px', 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        cursor: 'pointer',
-        border: checked ? '1px solid var(--color-primary)' : 'var(--glass-border)',
-        width: '100%',
-        background: 'transparent',
-        textAlign: 'left'
-      }}
-      onClick={onChange}
-      role="switch"
-      aria-checked={checked}
-      aria-label={label}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: checked ? 'var(--color-text)' : 'var(--color-text-muted)' }}>
-        <div style={{ color: checked ? 'var(--color-primary)' : 'inherit' }} aria-hidden="true">{icon}</div>
-        <span>{label}</span>
-      </div>
-      <div style={{ 
-        width: '40px', height: '22px', 
-        borderRadius: '11px', 
-        background: checked ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)',
-        position: 'relative',
-        transition: 'background 0.3s'
-      }} aria-hidden="true">
-        <div style={{
-          width: '18px', height: '18px',
-          borderRadius: '50%',
-          background: '#fff',
-          position: 'absolute',
-          top: '2px',
-          left: checked ? '20px' : '2px',
-          transition: 'left 0.3s'
-        }} />
-      </div>
-    </button>
-  );
-}
-
-PreferenceToggle.propTypes = {
-  label: PropTypes.string.isRequired,
-  icon: PropTypes.element.isRequired,
-  checked: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired,
-};

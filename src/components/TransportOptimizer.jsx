@@ -11,8 +11,17 @@ const model = genAI.getGenerativeModel({
   systemInstruction: "You are the Transport & Logistics Optimizer for the FIFA World Cup 2026. Generate a 3-4 step optimal journey plan for a fan heading to the stadium. Avoid congestion. Use emojis for transport modes (train, bus, walking). Keep it realistic and concise, under 150 words.",
 });
 
+/**
+ * Sanitizes input string to prevent XSS
+ * @param {string} input - The raw string
+ * @returns {string} The sanitized string
+ */
 const sanitizeInput = (input) => DOMPurify.sanitize(input);
 
+/**
+ * TransportOptimizer Component for calculating optimal stadium routes
+ * @returns {React.ReactElement} The rendered TransportOptimizer component
+ */
 export default function TransportOptimizer() {
   const [location, setLocation] = useState('');
   const [time, setTime] = useState('');
@@ -22,6 +31,10 @@ export default function TransportOptimizer() {
   
   const { displayedText, isTyping } = useTypewriter(routePlan, 10);
 
+  /**
+   * Handles the route generation form submission
+   * @param {React.FormEvent} e - The form event
+   */
   const handleGenerate = async (e) => {
     e.preventDefault();
     if (!location || !time) return;

@@ -3,7 +3,8 @@ import { Activity, AlertTriangle, Users } from 'lucide-react';
 import { useTypewriter } from '../hooks/useTypewriter';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import DOMPurify from 'dompurify';
-import PropTypes from 'prop-types';
+import MetricCard from './common/MetricCard';
+import ProgressBar from './common/ProgressBar';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({
@@ -11,8 +12,17 @@ const model = genAI.getGenerativeModel({
   systemInstruction: "You are the Crowd Intelligence AI for the FIFA World Cup 2026. Given the current stadium metrics, generate a concise, highly analytical operational report (under 70 words). Identify a critical surge risk and recommend a precise crowd diversion tactic (e.g. 'Divert 500 fans from Gate C to Gate D'). Format it like an automated emergency terminal output.",
 });
 
+/**
+ * Sanitizes input string to prevent XSS
+ * @param {string} input - The raw string
+ * @returns {string} The sanitized string
+ */
 const sanitizeInput = (input) => DOMPurify.sanitize(input);
 
+/**
+ * CrowdDashboard Component for monitoring live stadium metrics and AI alerts
+ * @returns {React.ReactElement} The rendered CrowdDashboard component
+ */
 export default function CrowdDashboard() {
   const [reportText, setReportText] = useState('');
   const [alerts, setAlerts] = useState([]);
@@ -21,6 +31,9 @@ export default function CrowdDashboard() {
   useEffect(() => {
     let isMounted = true;
     
+    /**
+     * Generates the operational report using Gemini AI
+     */
     const generateReport = async () => {
       try {
         if (!import.meta.env.VITE_GEMINI_API_KEY) throw new Error("Missing Gemini API Key");
@@ -102,51 +115,3 @@ export default function CrowdDashboard() {
     </section>
   );
 }
-
-CrowdDashboard.propTypes = {};
-
-function MetricCard({ title, value, icon, color }) {
-  return (
-    <article className="glass-card" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }} aria-label={title}>
-      <div style={{ padding: '12px', background: `color-mix(in srgb, ${color} 20%, transparent)`, borderRadius: '12px', color }} aria-hidden="true">
-        {icon}
-      </div>
-      <div>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginBottom: '4px' }}>{title}</p>
-        <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{value}</p>
-      </div>
-    </article>
-  );
-}
-
-MetricCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  icon: PropTypes.element.isRequired,
-  color: PropTypes.string.isRequired,
-};
-
-function ProgressBar({ label, percent, color }) {
-  return (
-    <div role="listitem" aria-label={`${label} at ${percent}% capacity`}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.875rem' }}>
-        <span>{label}</span>
-        <span style={{ color }}>{percent}%</span>
-      </div>
-      <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }} aria-hidden="true">
-        <div style={{ 
-          width: `${percent}%`, 
-          height: '100%', 
-          background: color,
-          transition: 'width 1s ease-in-out'
-        }} />
-      </div>
-    </div>
-  );
-}
-
-ProgressBar.propTypes = {
-  label: PropTypes.string.isRequired,
-  percent: PropTypes.number.isRequired,
-  color: PropTypes.string.isRequired,
-};

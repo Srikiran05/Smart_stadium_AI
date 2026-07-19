@@ -10,8 +10,17 @@ const model = genAI.getGenerativeModel({
   systemInstruction: "You are the SmartStadium AI for the FIFA World Cup 2026. You help fans with finding seats, food, restrooms, and navigating the stadium. Always detect the language the user is speaking, and reply in the EXACT SAME LANGUAGE. Be helpful, concise, and polite. If they just say 'Hola' or a greeting, greet them back in that language and ask how you can help them in the stadium today.",
 });
 
+/**
+ * Sanitizes input string to prevent XSS
+ * @param {string} input - The raw string
+ * @returns {string} The sanitized string
+ */
 const sanitizeInput = (input) => DOMPurify.sanitize(input);
 
+/**
+ * FanNavigator Component serving as a multilingual AI chatbot
+ * @returns {React.ReactElement} The rendered FanNavigator component
+ */
 export default function FanNavigator() {
   const [messages, setMessages] = useState([
     { role: 'ai', content: "I am the SmartStadium AI. How can I assist you with your match day experience?", id: 1 }
@@ -20,6 +29,10 @@ export default function FanNavigator() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [chat, setChat] = useState(() => model.startChat({ history: [] }));
 
+  /**
+   * Handles the chat form submission
+   * @param {React.FormEvent} e - The form event
+   */
   const handleSend = async (e) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
