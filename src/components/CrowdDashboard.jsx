@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash",
+  model: "gemini-3.5-flash",
   systemInstruction: "You are the Crowd Intelligence AI for the FIFA World Cup 2026. Given the current stadium metrics, generate a concise, highly analytical operational report (under 70 words). Identify a critical surge risk and recommend a precise crowd diversion tactic (e.g. 'Divert 500 fans from Gate C to Gate D'). Format it like an automated emergency terminal output.",
 });
 

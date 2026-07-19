@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash",
+  model: "gemini-3.5-flash",
   systemInstruction: "You are the Transport & Logistics Optimizer for the FIFA World Cup 2026. Generate a 3-4 step optimal journey plan for a fan heading to the stadium. Avoid congestion. Use emojis for transport modes (train, bus, walking). Keep it realistic and concise, under 150 words.",
 });
 

@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash",
+  model: "gemini-3.5-flash",
   systemInstruction: "You are the Accessibility & Sustainability Advisor for the FIFA World Cup 2026 SmartStadium. Generate a personalized match day plan for a fan based on their selected preferences. Be enthusiastic, concise, and format the output cleanly with emojis. Mention specific stadium gates, quiet zones, and sustainability metrics (e.g. CO2 offset by transit). Keep it under 150 words.",
 });
 
